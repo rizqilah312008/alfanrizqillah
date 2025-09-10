@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Creative Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1100fd 0%, #000000 100%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #6a28d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(10deg) rotateX(10deg);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+        }
+        
+        .typing-animation {
+            overflow: hidden;
+            border-right: 3px solid #667eea;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #667eea; }
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .skill-bar {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: inherit;
+            transition: width 2s ease-in-out;
+            width: 0%;
+        }
+        
+        .photo-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .photo-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .neon-border {
+            border: 2px solid #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            animation: neon-pulse 2s infinite alternate;
+        }
+        
+        @keyframes neon-pulse {
+            from { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+            to { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+
+        .admin-panel {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area.dragover {
+            border-color: #764ba2;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .uploaded-image {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold gradient-text">Portfolio</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link hover:text-purple-400 transition-colors duration-300">Home</a>
+                    <a href="#about" class="nav-link hover:text-purple-400 transition-colors duration-300">About</a>
+                    <a href="#skills" class="nav-link hover:text-purple-400 transition-colors duration-300">Skills</a>
+                    <a href="#projects" class="nav-link hover:text-purple-400 transition-colors duration-300">Projects</a>
+                    <a href="#contact" class="nav-link hover:text-purple-400 transition-colors duration-300">Contact</a>
+                    <button onclick="showAdminPanel()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300">
+                        <i class="fas fa-cog mr-2"></i>Admin Panel
+                    </button>
+                </div>
+                <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden fixed top-16 left-0 w-full glass-effect z-40 md:hidden">
+        <div class="px-4 py-4 space-y-4">
+            <a href="#home" class="block hover:text-purple-400 transition-colors">Home</a>
+            <a href="#about" class="block hover:text-purple-400 transition-colors">About</a>
+            <a href="#skills" class="block hover:text-purple-400 transition-colors">Skills</a>
+            <a href="#projects" class="block hover:text-purple-400 transition-colors">Projects</a>
+            <a href="#contact" class="block hover:text-purple-400 transition-colors">Contact</a>
+            <button onclick="showAdminPanel()" class="block w-full text-left text-purple-400">Admin Panel</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminPanel" class="hidden fixed inset-0 z-50 admin-panel">
+        <div class="min-h-screen p-4 overflow-y-auto">
+            <div class="max-w-6xl mx-auto">
+                <!-- Admin Header -->
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-4xl font-bold gradient-text">
+                        <i class="fas fa-shield-alt mr-3"></i>Admin Panel
+                    </h1>
+                    <button onclick="closeAdminPanel()" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-300">
+                        <i class="fas fa-times mr-2"></i>Close
+                    </button>
+                </div>
+
+                <!-- Admin Tabs -->
+                <div class="flex space-x-4 mb-8">
+                    <button onclick="showAdminTab('photos')" id="photosTab" class="admin-tab bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-camera mr-2"></i>Manage Photos
+                    </button>
+                    <button onclick="showAdminTab('projects')" id="projectsTab" class="admin-tab bg-gray-700 text-gray-300 px-6 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-folder mr-2"></i>Manage Projects
+                    </button>
+                    <button onclick="showAdminTab('profile')" id="profileTab" class="admin-tab bg-gray-700 text-gray-300 px-6 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-user mr-2"></i>Profile Settings
+                    </button>
+                </div>
+
+                <!-- Photos Management Tab -->
+                <div id="photosContent" class="admin-content">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Hero Photo Upload -->
+                        <div class="glass-effect p-6 rounded-2xl">
+                            <h3 class="text-2xl font-bold mb-4 text-purple-400">
+                                <i class="fas fa-star mr-2"></i>Hero Photo (Main)
+                            </h3>
+                            <div class="drag-drop-area p-8 rounded-xl text-center mb-4" ondrop="dropHandler(event, 'hero')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                <div id="heroPhotoPreview" class="mb-4">
+                                    <i class="fas fa-cloud-upload-alt text-6xl text-purple-400 mb-4"></i>
+                                    <p class="text-lg font-semibold mb-2">Drop your hero photo here</p>
+                                    <p class="text-gray-400">or click to browse</p>
+                                </div>
+                                <input type="file" id="heroPhotoInput" class="hidden" accept="image/*" onchange="handleFileSelect(event, 'hero')">
+                                <button onclick="document.getElementById('heroPhotoInput').click()" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all">
+                                    Choose File
+                                </button>
+                            </div>
+                            <div class="flex space-x-4">
+                                <button onclick="uploadPhoto('hero')" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all">
+                                    <i class="fas fa-upload mr-2"></i>Upload Hero Photo
+                                </button>
+                                <button onclick="removePhoto('hero')" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all">
+                                    <i class="fas fa-trash mr-2"></i>Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- About Photo Upload -->
+                        <div class="glass-effect p-6 rounded-2xl">
+                            <h3 class="text-2xl font-bold mb-4 text-purple-400">
+                                <i class="fas fa-user-circle mr-2"></i>About Photo (Professional)
+                            </h3>
+                            <div class="drag-drop-area p-8 rounded-xl text-center mb-4" ondrop="dropHandler(event, 'about')" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)">
+                                <div id="aboutPhotoPreview" class="mb-4">
+                                    <i class="fas fa-cloud-upload-alt text-6xl text-purple-400 mb-4"></i>
+                                    <p class="text-lg font-semibold mb-2">Drop your professional photo here</p>
+                                    <p class="text-gray-400">or click to browse</p>
+                                </div>
+                                <input type="file" id="aboutPhotoInput" class="hidden" accept="image/*" onchange="handleFileSelect(event, 'about')">
+                                <button onclick="document.getElementById('aboutPhotoInput').click()" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all">
+                                    Choose File
+                                </button>
+                            </div>
+                            <div class="flex space-x-4">
+                                <button onclick="uploadPhoto('about')" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all">
+                                    <i class="fas fa-upload mr-2"></i>Upload About Photo
+                                </button>
+                                <button onclick="removePhoto('about')" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all">
+                                    <i class="fas fa-trash mr-2"></i>Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo Guidelines -->
+                    <div class="glass-effect p-6 rounded-2xl mt-8">
+                        <h3 class="text-xl font-bold mb-4 text-yellow-400">
+                            <i class="fas fa-lightbulb mr-2"></i>Photo Guidelines
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Hero Photo:</h4>
+                                <ul class="text-gray-300 space-y-1">
+                                    <li>• Recommended size: 800x800px</li>
+                                    <li>• Format: JPG, PNG, WebP</li>
+                                    <li>• Max file size: 2MB</li>
+                                    <li>• Square aspect ratio works best</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">About Photo:</h4>
+                                <ul class="text-gray-300 space-y-1">
+                                    <li>• Recommended size: 600x600px</li>
+                                    <li>• Format: JPG, PNG, WebP</li>
+                                    <li>• Max file size: 2MB</li>
+                                    <li>• Professional headshot preferred</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Management Tab -->
+                <div id="projectsContent" class="admin-content hidden">
+                    <!-- Add New Project Form -->
+                    <div class="glass-effect p-6 rounded-2xl mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-400">
+                            <i class="fas fa-plus-circle mr-2"></i>Add New Project
+                        </h3>
+                        <form id="projectForm" class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Project Title</label>
+                                <input type="text" id="projectTitle" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="Enter project title" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Project Category</label>
+                                <select id="projectCategory" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500">
+                                    <option value="web">Web Development</option>
+                                    <option value="mobile">Mobile App</option>
+                                    <option value="desktop">Desktop App</option>
+                                    <option value="design">UI/UX Design</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold mb-2">Project Description</label>
+                                <textarea id="projectDescription" rows="3" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="Describe your project..." required></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Technologies Used (comma separated)</label>
+                                <input type="text" id="projectTech" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="React, Node.js, MongoDB">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Project Links</label>
+                                <div class="space-y-2">
+                                    <input type="url" id="projectDemo" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="Demo URL (optional)">
+                                    <input type="url" id="projectGithub" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="GitHub URL (optional)">
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <button type="submit" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-all duration-300 font-semibold">
+                                    <i class="fas fa-plus mr-2"></i>Add Project
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Existing Projects List -->
+                    <div class="glass-effect p-6 rounded-2xl">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-400">
+                            <i class="fas fa-list mr-2"></i>Existing Projects
+                        </h3>
+                        <div id="projectsList" class="space-y-4">
+                            <!-- Projects will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Settings Tab -->
+                <div id="profileContent" class="admin-content hidden">
+                    <div class="glass-effect p-6 rounded-2xl">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-400">
+                            <i class="fas fa-user-edit mr-2"></i>Profile Information
+                        </h3>
+                        <form id="profileForm" class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Full Name</label>
+                                <input type="text" id="profileName" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" value="Muhammad Alfan Rizqillah Arif">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Job Title</label>
+                                <input type="text" id="profileTitle" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" value="Full Stack Developer">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold mb-2">Bio/Description</label>
+                                <textarea id="profileBio" rows="4" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500">Passionate about creating amazing digital experiences with modern technologies and creative solutions.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Email</label>
+                                <input type="email" id="profileEmail" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" value="hello@portfolio.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Phone</label>
+                                <input type="tel" id="profilePhone" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" value="+1 (555) 123-4567">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Location</label>
+                                <input type="text" id="profileLocation" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" value="San Francisco, CA">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">GitHub URL</label>
+                                <input type="url" id="profileGithub" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-purple-500" placeholder="https://github.com/username">
+                            </div>
+                            <div class="md:col-span-2">
+                                <button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold">
+                                    <i class="fas fa-save mr-2"></i>Save Profile Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center gradient-bg relative overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0">
+            <div class="floating absolute top-20 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full"></div>
+            <div class="floating absolute top-40 right-20 w-16 h-16 bg-white bg-opacity-10 rounded-full" style="animation-delay: 1s;"></div>
+            <div class="floating absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full" style="animation-delay: 2s;"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div>
+                <h1 class="text-5xl md:text3xl font-bold mb-6">
+                    <span class="text-yellow-400" id="heroName">Muhammad Alfan Rizqillah Arif</span>
+                </h1>
+                <div class="text-2xl md:text-3xl mb-8 typing-animation" id="heroTitle">
+                    Full Stack Developer
+                </div>
+                <p class="text-xl mb-8 text-gray-200" id="heroBio">
+                    Passionate about creating amazing digital experiences with modern technologies and creative solutions.
+                </p>
+                <div class="flex space-x-4">
+                    <button class="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 pulse-glow">
+                        View My Work
+                    </button>
+                    <button class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-all duration-300">
+                        Download CV
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Photo Template -->
+            <div class="flex justify-center">
+                <div class="relative">
+                    <div id="heroPhotoContainer" class="w-80 h-80 photo-placeholder rounded-full neon-border flex items-center justify-center" onclick="showAdminPanel(); showAdminTab('photos')">
+                        <div class="text-center">
+                           <img src="WhatsApp Image 2025-09-10 at 13.58.56.jpeg" alt="">
+                            <p class="text-white text-lg font-medium">Your Photo Here</p>
+                            <p class="text-gray-200 text-sm mt-2">Click to upload</p>
+                        </div>
+                    </div>
+                    <!-- Decorative Elements -->
+                    <div class="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full animate-bounce"></div>
+                    <div class="absolute -bottom-4 -left-4 w-6 h-6 bg-pink-400 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 gradient-text">About Me</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h3 class="text-3xl font-bold text-purple-400">Creative Problem Solver</h3>
+                    <p class="text-gray-300 text-lg leading-relaxed" id="aboutBio">
+                        I'm a passionate developer who loves turning ideas into reality through code. 
+                        With expertise in modern web technologies, I create digital experiences that are 
+                        both beautiful and functional.
+                    </p>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        When I'm not coding, you can find me exploring new technologies, contributing to 
+                        open source projects, or sharing knowledge with the developer community.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mt-8">
+                        <div class="glass-effect p-6 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-purple-400 mb-2" id="projectCount">50+</div>
+                            <div class="text-gray-300">Projects Completed</div>
+                        </div>
+                        <div class="glass-effect p-6 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-purple-400 mb-2">3+</div>
+                            <div class="text-gray-300">Years Experience</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Another Photo Template -->
+                <div class="flex justify-center">
+                    <div class="relative">
+                        <div id="aboutPhotoContainer" class="w-96 h-96 photo-placeholder rounded-2xl neon-border flex items-center justify-center card-3d" onclick="showAdminPanel(); showAdminTab('photos')">
+                            <div class="text-center">
+                                <img src="WhatsApp Image 2025-09-10 at 13.49.05.jpeg" alt="">
+                                <p class="text-white text-xl font-medium">Professional Photo</p>
+                                <p class="text-gray-200 text-sm mt-2">Upload your best shot</p>
+                            </div>
+                        </div>
+                        <!-- Floating Elements -->
+                        <div class="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full floating"></div>
+                        <div class="absolute -bottom-6 -right-6 w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full floating" style="animation-delay: 1s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 gradient-text">Skills & Expertise</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Technical Skills -->
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-8 text-purple-400">Technical Skills</h3>
+                    <div class="space-y-6">
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">JavaScript</span>
+                                <span class="text-purple-400">90%</span>
+                            </div>
+                            <div class="skill-bar bg-gray-700 rounded-full h-3">
+                                <div class="skill-progress" data-width="90"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">React.js</span>
+                                <span class="text-purple-400">85%</span>
+                            </div>
+                            <div class="skill-bar bg-gray-700 rounded-full h-3">
+                                <div class="skill-progress" data-width="85"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">Node.js</span>
+                                <span class="text-purple-400">80%</span>
+                            </div>
+                            <div class="skill-bar bg-gray-700 rounded-full h-3">
+                                <div class="skill-progress" data-width="80"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">Python</span>
+                                <span class="text-purple-400">75%</span>
+                            </div>
+                            <div class="skill-bar bg-gray-700 rounded-full h-3">
+                                <div class="skill-progress" data-width="75"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Design Skills -->
+                <div class="glass-effect p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-8 text-purple-400">Design & Tools</h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
+                            <i class="fab fa-figma text-4xl text-purple-400 mb-3"></i>
+                            <div class="font-semibold">Figma</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
+                            <i class="fab fa-adobe text-4xl text-purple-400 mb-3"></i>
+                            <div class="font-semibold">Adobe XD</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
+                            <i class="fab fa-git-alt text-4xl text-purple-400 mb-3"></i>
+                            <div class="font-semibold">Git</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800 rounded-xl hover:bg-gray-700 transition-colors">
+                            <i class="fab fa-docker text-4xl text-purple-400 mb-3"></i>
+                            <div class="font-semibold">Docker</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold gradient-text">Featured Projects</h2>
+                <button onclick="showAdminPanel(); showAdminTab('projects')" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all duration-300">
+                    <i class="fas fa-plus mr-2"></i>Add Project
+                </button>
+            </div>
+            
+            <div id="projectsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Projects will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl md:text-6xl font-bold text-center mb-16 gradient-text">Let's Work Together</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-3xl font-bold mb-8 text-purple-400">Get In Touch</h3>
+                    <p class="text-gray-300 text-lg mb-8">
+                        Ready to bring your ideas to life? Let's discuss your project and create something amazing together.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-envelope text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Email</div>
+                                <div class="text-gray-300" id="contactEmail">alfanrizqillah74@gmail.com</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-phone text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Phone</div>
+                                <div class="text-gray-300" id="contactPhone">+62 815 2947 8380</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Location</div>
+                                <div class="text-gray-300" id="contactLocation">Keboharan Krian</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-6 mt-8">
+                        <a href="#" class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors">
+                            <i class="fab fa-github text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors">
+                            <i class="fab fa-linkedin text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition-colors">
+                            <i class="fab fa-twitter text-white"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="glass-effect p-8 rounded-2xl">
+                    <form onsubmit="handleContactForm(event)">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Name</label>
+                                <input type="text" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Email</label>
+                                <input type="email" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Message</label>
+                                <textarea rows="5" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors" required></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-black">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="gradient-text text-2xl font-bold mb-4">Portfolio</div>
+            <p class="text-gray-400 mb-6">Creating digital experiences that inspire and engage</p>
+            <div class="border-t border-gray-800 pt-6">
+                <p class="text-gray-500">&copy; 2024 Portfolio. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let projects = [
+            {
+                id: 1,
+                title: "E-Commerce Platform",
+                description: "Modern e-commerce solution with React and Node.js",
+                category: "web",
+                technologies: ["React", "Node.js"],
+                demoUrl: "",
+                githubUrl: "",
+                icon: "fas fa-shopping-cart",
+                gradient: "from-purple-500 to-pink-500"
+            },
+            {
+                id: 2,
+                title: "Mobile App UI",
+                description: "Beautiful mobile app interface with smooth animations",
+                category: "mobile",
+                technologies: ["Flutter", "Dart"],
+                demoUrl: "",
+                githubUrl: "",
+                icon: "fas fa-mobile-alt",
+                gradient: "from-blue-500 to-teal-500"
+            },
+            {
+                id: 3,
+                title: "Analytics Dashboard",
+                description: "Real-time data visualization dashboard",
+                category: "web",
+                technologies: ["Vue.js", "D3.js"],
+                demoUrl: "",
+                githubUrl: "",
+                icon: "fas fa-chart-line",
+                gradient: "from-yellow-500 to-red-500"
+            }
+        ];
+
+        let uploadedPhotos = {
+            hero: null,
+            about: null
+        };
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Admin Panel Functions
+        function showAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            loadProjectsList();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showAdminTab(tabName) {
+            // Hide all content
+            document.querySelectorAll('.admin-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Reset all tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('bg-purple-600', 'text-white');
+                tab.classList.add('bg-gray-700', 'text-gray-300');
+            });
+            
+            // Show selected content and activate tab
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            document.getElementById(tabName + 'Tab').classList.remove('bg-gray-700', 'text-gray-300');
+            document.getElementById(tabName + 'Tab').classList.add('bg-purple-600', 'text-white');
+        }
+
+        // Photo Upload Functions
+        function dragOverHandler(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function dragLeaveHandler(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function dropHandler(event, photoType) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0], photoType);
+            }
+        }
+
+        function handleFileSelect(event, photoType) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file, photoType);
+            }
+        }
+
+        function handleFile(file, photoType) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size must be less than 2MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedPhotos[photoType] = e.target.result;
+                showPhotoPreview(e.target.result, photoType);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showPhotoPreview(imageSrc, photoType) {
+            const previewContainer = document.getElementById(photoType + 'PhotoPreview');
+            previewContainer.innerHTML = `
+                <img src="${imageSrc}" alt="Preview" class="uploaded-image mx-auto mb-4">
+                <p class="text-green-400 font-semibold">✓ Photo ready to upload</p>
+            `;
+        }
+
+        function uploadPhoto(photoType) {
+            if (!uploadedPhotos[photoType]) {
+                alert('Please select a photo first.');
+                return;
+            }
+
+            // Simulate upload process
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+            button.disabled = true;
+
+            setTimeout(() => {
+                // Update the actual photo containers
+                updatePhotoContainer(photoType, uploadedPhotos[photoType]);
+                
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Uploaded!';
+                button.classList.remove('bg-green-600');
+                button.classList.add('bg-green-700');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-green-700');
+                    button.classList.add('bg-green-600');
+                }, 2000);
+                
+                alert('Photo uploaded successfully!');
+            }, 1500);
+        }
+
+        function updatePhotoContainer(photoType, imageSrc) {
+            const container = document.getElementById(photoType + 'PhotoContainer');
+            const isRound = photoType === 'hero';
+            
+            container.innerHTML = `
+                <img src="${imageSrc}" alt="${photoType} photo" 
+                     class="w-full h-full object-cover ${isRound ? 'rounded-full' : 'rounded-2xl'}"
+                     onclick="showAdminPanel(); showAdminTab('photos')">
+            `;
+        }
+
+        function removePhoto(photoType) {
+            if (confirm('Are you sure you want to remove this photo?')) {
+                uploadedPhotos[photoType] = null;
+                
+                // Reset preview
+                const previewContainer = document.getElementById(photoType + 'PhotoPreview');
+                const isHero = photoType === 'hero';
+                previewContainer.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt text-6xl text-purple-400 mb-4"></i>
+                    <p class="text-lg font-semibold mb-2">Drop your ${isHero ? 'hero' : 'professional'} photo here</p>
+                    <p class="text-gray-400">or click to browse</p>
+                `;
+                
+                // Reset main container
+                const container = document.getElementById(photoType + 'PhotoContainer');
+                const icon = photoType === 'hero' ? 'fas fa-camera' : 'fas fa-user';
+                const text = photoType === 'hero' ? 'Your Photo Here' : 'Professional Photo';
+                const subtext = photoType === 'hero' ? 'Click to upload' : 'Upload your best shot';
+                
+                container.innerHTML = `
+                    <div class="text-center">
+                        <i class="${icon} text-${photoType === 'hero' ? '6' : '8'}xl text-white mb-4 opacity-70"></i>
+                        <p class="text-white text-${photoType === 'hero' ? 'lg' : 'xl'} font-medium">${text}</p>
+                        <p class="text-gray-200 text-sm mt-2">${subtext}</p>
+                    </div>
+                `;
+                
+                alert('Photo removed successfully!');
+            }
+        }
+
+        // Project Management Functions
+        function loadProjectsList() {
+            const projectsList = document.getElementById('projectsList');
+            projectsList.innerHTML = '';
+            
+            projects.forEach(project => {
+                const projectElement = document.createElement('div');
+                projectElement.className = 'glass-effect p-4 rounded-xl flex justify-between items-center';
+                projectElement.innerHTML = `
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-lg">${project.title}</h4>
+                        <p class="text-gray-400 text-sm">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            ${project.technologies.map(tech => `
+                                <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs">${tech}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 ml-4">
+                        <button onclick="editProject(${project.id})" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProject(${project.id})" class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                projectsList.appendChild(projectElement);
+            });
+        }
+
+        function renderProjects() {
+            const projectsGrid = document.getElementById('projectsGrid');
+            projectsGrid.innerHTML = '';
+            
+            projects.forEach(project => {
+                const projectElement = document.createElement('div');
+                projectElement.className = 'glass-effect rounded-2xl overflow-hidden card-3d group';
+                projectElement.innerHTML = `
+                    <div class="h-48 bg-gradient-to-r ${project.gradient} flex items-center justify-center">
+                        <i class="${project.icon} text-6xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">${project.title}</h3>
+                        <p class="text-gray-300 mb-4">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.technologies.map(tech => `
+                                <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">${tech}</span>
+                            `).join('')}
+                        </div>
+                        <div class="flex space-x-4">
+                            ${project.demoUrl ? `
+                                <a href="${project.demoUrl}" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-2"></i>Live Demo
+                                </a>
+                            ` : ''}
+                            ${project.githubUrl ? `
+                                <a href="${project.githubUrl}" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">
+                                    <i class="fab fa-github mr-2"></i>Code
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                projectsGrid.appendChild(projectElement);
+            });
+            
+            // Update project count
+            document.getElementById('projectCount').textContent = projects.length + '+';
+        }
+
+        // Project Form Handler
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                id: Date.now(),
+                title: document.getElementById('projectTitle').value,
+                description: document.getElementById('projectDescription').value,
+                category: document.getElementById('projectCategory').value,
+                technologies: document.getElementById('projectTech').value.split(',').map(tech => tech.trim()),
+                demoUrl: document.getElementById('projectDemo').value,
+                githubUrl: document.getElementById('projectGithub').value,
+                icon: getCategoryIcon(document.getElementById('projectCategory').value),
+                gradient: getCategoryGradient(document.getElementById('projectCategory').value)
+            };
+            
+            projects.push(formData);
+            renderProjects();
+            loadProjectsList();
+            
+            // Reset form
+            this.reset();
+            
+            alert('Project added successfully!');
+        });
+
+        function getCategoryIcon(category) {
+            const icons = {
+                web: 'fas fa-globe',
+                mobile: 'fas fa-mobile-alt',
+                desktop: 'fas fa-desktop',
+                design: 'fas fa-paint-brush',
+                other: 'fas fa-code'
+            };
+            return icons[category] || 'fas fa-code';
+        }
+
+        function getCategoryGradient(category) {
+            const gradients = {
+                web: 'from-blue-500 to-purple-500',
+                mobile: 'from-green-500 to-teal-500',
+                desktop: 'from-purple-500 to-pink-500',
+                design: 'from-yellow-500 to-orange-500',
+                other: 'from-gray-500 to-gray-700'
+            };
+            return gradients[category] || 'from-gray-500 to-gray-700';
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                projects = projects.filter(project => project.id !== projectId);
+                renderProjects();
+                loadProjectsList();
+                alert('Project deleted successfully!');
+            }
+        }
+
+        function editProject(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                // Fill form with project data
+                document.getElementById('projectTitle').value = project.title;
+                document.getElementById('projectDescription').value = project.description;
+                document.getElementById('projectCategory').value = project.category;
+                document.getElementById('projectTech').value = project.technologies.join(', ');
+                document.getElementById('projectDemo').value = project.demoUrl;
+                document.getElementById('projectGithub').value = project.githubUrl;
+                
+                // Remove project from array (will be re-added when form is submitted)
+                projects = projects.filter(p => p.id !== projectId);
+                
+                alert('Project loaded for editing. Make your changes and click "Add Project" to save.');
+            }
+        }
+
+        // Profile Form Handler
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Update profile information in the UI
+            document.getElementById('heroName').textContent = document.getElementById('profileName').value;
+            document.getElementById('heroTitle').textContent = document.getElementById('profileTitle').value;
+            document.getElementById('heroBio').textContent = document.getElementById('profileBio').value;
+            document.getElementById('aboutBio').textContent = document.getElementById('profileBio').value;
+            document.getElementById('contactEmail').textContent = document.getElementById('profileEmail').value;
+            document.getElementById('contactPhone').textContent = document.getElementById('profilePhone').value;
+            document.getElementById('contactLocation').textContent = document.getElementById('profileLocation').value;
+            
+            alert('Profile updated successfully!');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Close mobile menu
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+
+        // Animate skill bars when in view
+        function animateSkillBars() {
+            const skillBars = document.querySelectorAll('.skill-progress');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const width = entry.target.getAttribute('data-width');
+                        entry.target.style.width = width + '%';
+                    }
+                });
+            });
+
+            skillBars.forEach(bar => observer.observe(bar));
+        }
+
+        // Contact form handler
+        function handleContactForm(event) {
+            event.preventDefault();
+            
+            // Show success animation
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Sending...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = 'Message Sent! ✓';
+                button.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-green-600');
+                    event.target.reset();
+                }, 2000);
+            }, 1000);
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            animateSkillBars();
+            renderProjects();
+            
+            // Add scroll effect to navigation
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 100) {
+                    nav.classList.add('bg-opacity-95');
+                } else {
+                    nav.classList.remove('bg-opacity-95');
+                }
+            });
+        });
+
+        // Add parallax effect
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.floating');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.1);
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Close admin panel when clicking outside
+        document.getElementById('adminPanel').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAdminPanel();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97cce782d538fd25',t:'MTc1NzQ4NjExNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
